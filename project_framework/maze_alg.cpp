@@ -1,16 +1,39 @@
 #include "Mirobot.h"
 
-bool been[4];
+CrossRoads prevJunct;
+int prevTurn = 1;
+int oneSide = 0;
 int orientation = 0;
-int deadX = -1;
-int deadY = -1;
 int x = 0;
 int y = 0;
-int prevTurn;
 //0: north
 //1: east
 //2: south
 //3: west
+
+void rotate(int amount)
+{
+  orientation+=amount;
+  orientation%=4;
+}
+
+void updateCoords(int move)
+{
+  switch (orientation)
+    {
+      case 0:
+        y+=move;
+        break;
+      case 1:
+        x-=move;
+        break;
+      case 2:
+        y-=move;
+        break;
+      case 3:
+        x+=move;
+    }
+}
 
 void Mirobot::do_maze()
 {
@@ -19,51 +42,71 @@ void Mirobot::do_maze()
 
   if (collideLeft && collideRight) {
     //Dead end
-    int dx = abs(x - deadX);
-    int dy = abs(y - deadY);
+    oneSide = 0;
+    int dx = abs(x - prevJunct.deadX);
+    int dy = abs(y - prevJunct.deadY);
+
+    //Back up.
+    back(50);
+    updateCoords(-50);
+    
     if (dx > 80 || dy > 80)
     {
       //Reset been state
-      been[0] = been[1] = been[2] = been[3] = false;
+      //TODO: push prevJunct instead.
+      prevJunct = new CrossRoads();
+      prevJunct.been[(orientation + 2) % 4] = true;
+      prevJunct.deadX = x;
+      prevJunct.deadY = y;
     }
-    been[orientation] = true;
     
-    back(50);
-    switch (orientation)
+    prevJunct.been[orientation] = true;
+    if (!prevJunct.been[(orientation - prevTurn) % 4])
     {
-      case 0:
-        y-=50;
-        break;
-      case 1:
-        x+=50;
-        break;
-      case 2:
-        y+=50;
-      case 3:
-        x-=50;
+      if (prevTurn < 0)
+        right(-90 * prevTurn);
+      else
+        left(90 * prevTurn);
+      rotate(-prevTurn);
+      prevTurn = -prevTurn;
+    } else if (!prevJunct.been[(orientation + prevTurn) % 4]) {
+      if (prevTurn < 0)
+        left(-90 * prevTurn);
+      else
+        right(90 * prevTurn);
+      rotate(prevTurn);
+    } else if (!prevJunct.been[(orientation + 2) % 2]) {
+      left(180);
+      rotate(2);
+    } else {
+      //If we used all three locations then we are screwed.
+      while(true)
+      {
+        mirobot.beep(20);
+      }
     }
-    deadX = x;
-    deadY = y;
-    //TODO: turn with optimization.
-
-    //TODO: If we used all three locations then we are screwed.
   }else if (collideLeft || collideRight) {
-    //TODO: this case
-  }else {
-    forward(1);
-    switch (orientation)
+    //Back up and try again.
+    oneSide++;
+    if (oneSide >= 5)
     {
-      case 0:
-        y++;
-        break;
-      case 1:
-        x--;
-        break;
-      case 2:
-        y--;
-      case 3:
-        x++;
+      back(50);
+      left(90);
+      rotate(-1);
+      if (collideLeft) {
+        back(20);
+        updateCoords(-20);
+      } else {
+        forward(20);
+        updateCoords(20);
+      }
+      right(90);
+      rotate(1);
     }
+  }else {
+    oneSide = 0;
+    forward(1);
+    updateCoords(1);
   }
 }
 

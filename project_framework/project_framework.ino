@@ -1,5 +1,6 @@
 
 #include "Mirobot.h"
+#include "CrossRoads.h"
 /*
 This sketch shows how you can program Mirobot directly in the Arduino environment.
 */
@@ -19,8 +20,8 @@ void loop(){
    //mirobot.draw_parallel_lines(100);
    //mirobot.draw_circle();
    //mirobot.draw_heart();
-   mirobot.draw_artwork();
-
+   //mirobot.draw_artwork();
+   mirobot.do_maze();
    //mirobot.follow_line();
    //mirobot.collision();
 

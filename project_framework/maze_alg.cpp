@@ -6,17 +6,23 @@ CrossRoads* prevJunct;
 int prevTurn = 1;
 int oneSide = 0;
 int orientation = 0;
-int x = 0;
-int y = 0;
+long x = 0;
+long y = 0;
 //0: north
 //1: east
 //2: south
 //3: west
 
+int reorientate(int amount)
+{
+  
+  int val = (orientation+amount) & 3;
+}
+
 void rotate(int amount)
 {
-  orientation+=amount;
-  orientation%=4;
+  orientation = reorientate(amount);
+  
 }
 
 void updateCoords(int move)
@@ -42,28 +48,32 @@ void Mirobot::do_maze()
   boolean collideLeft = !digitalRead(LEFT_COLLIDE_SENSOR);
   boolean collideRight = !digitalRead(RIGHT_COLLIDE_SENSOR);
 
-  if (collideLeft && collideRight) {
+  if (collideLeft || collideRight) {
     //Dead end
     oneSide = 0;
-    int dx = abs(x - prevJunct->deadX);
-    int dy = abs(y - prevJunct->deadY);
+    long dx = abs(x - prevJunct->deadX);
+    long dy = abs(y - prevJunct->deadY);
 
     //Back up.
     back(50);
     updateCoords(-50);
+
     
-    if (dx > 80 || dy > 80)
+    
+    if (dx > 120 || dy > 120)
     {
+      beep(200);
       //Reset been state
       //TODO: push prevJunct instead.
       prevJunct = new CrossRoads();
-      prevJunct->been[(orientation + 2) % 4] = true;
+      prevJunct->been[reorientate(2)] = true;
+      prevJunct->inOrient = reorientate(2);
       prevJunct->deadX = x;
       prevJunct->deadY = y;
     }
     
     prevJunct->been[orientation] = true;
-    if (!prevJunct->been[(orientation - prevTurn) % 4])
+    if (!prevJunct->been[reorientate(-prevTurn)])
     {
       if (prevTurn < 0)
         right(-90 * prevTurn);
@@ -71,27 +81,29 @@ void Mirobot::do_maze()
         left(90 * prevTurn);
       rotate(-prevTurn);
       prevTurn = -prevTurn;
-    } else if (!prevJunct->been[(orientation + prevTurn) % 4]) {
+    } else if (!prevJunct->been[reorientate(prevTurn)]) {
       if (prevTurn < 0)
         left(-90 * prevTurn);
       else
         right(90 * prevTurn);
       rotate(prevTurn);
-    } else if (!prevJunct->been[(orientation + 2) % 2]) {
+    } else if (!prevJunct->been[reorientate(2)]) {
       left(180);
       rotate(2);
     } else {
       //If we used all three locations then we are screwed.
-      while(true)
-      {
-        beep(20);
-      }
+      int move = prevJunct->inOrient - orientation;
+      right(90 * move);
+      rotate(move);
+      beep3(1000);
     }
   }else if (collideLeft || collideRight) {
+    //NOTE only call this case when we are retracing.
     //Back up and try again.
     oneSide++;
-    if (oneSide >= 5)
+    if (oneSide >= 50)
     {
+      updateCoords(-45);
       back(50);
       left(90);
       rotate(-1);
@@ -110,5 +122,6 @@ void Mirobot::do_maze()
     forward(1);
     updateCoords(1);
   }
+  beep(20);
 }
 

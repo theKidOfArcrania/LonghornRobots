@@ -7,6 +7,7 @@
 #define Mirobot_h
 
 #include "Arduino.h"
+#include "pitches.h"
 #include "lib/HotStepper.h"
 #include "lib/CmdProcessor.h"
 #include <EEPROM.h>
@@ -86,6 +87,9 @@ class Mirobot {
     void collide();
     void collideState(char &state);
     void beep(int);
+    void beep2(int);
+    void beep3(int);
+    void beep4(int);
     void setHwVersion(char&);
     boolean ready();
     void process();

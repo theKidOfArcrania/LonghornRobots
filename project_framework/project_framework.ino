@@ -25,7 +25,6 @@ void loop(){
    //mirobot.follow_line();
    //mirobot.collision();
 
-   mirobot.beep(20); 
    //delay(3000); 
 }
 

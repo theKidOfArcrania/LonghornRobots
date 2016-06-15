@@ -5,8 +5,8 @@ class CrossRoads
 {
 public:
   bool been[4];
-  
-  int deadX = -1;
-  int deadY = -1;
+  int inOrient;
+  long deadX = -1;
+  long deadY = -1;
 };
 #endif

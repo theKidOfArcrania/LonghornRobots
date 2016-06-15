@@ -220,6 +220,21 @@ void Mirobot::collideState(char &state){
   }
 }
 
+void Mirobot::beep4(int duration){
+  tone(SPEAKER_PIN, NOTE_G5, duration);
+  beepComplete = millis() + duration;
+}
+
+void Mirobot::beep3(int duration){
+  tone(SPEAKER_PIN, NOTE_C5, duration);
+  beepComplete = millis() + duration;
+}
+
+void Mirobot::beep2(int duration){
+  tone(SPEAKER_PIN, NOTE_G4, duration);
+  beepComplete = millis() + duration;
+}
+
 void Mirobot::beep(int duration){
   tone(SPEAKER_PIN, NOTE_C4, duration);
   beepComplete = millis() + duration;

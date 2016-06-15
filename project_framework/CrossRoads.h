@@ -1,3 +1,6 @@
+#ifndef CrossRoads_h
+#define CrossRoads_h
+
 class CrossRoads
 {
 public:
@@ -5,5 +8,5 @@ public:
   
   int deadX = -1;
   int deadY = -1;
-}
-
+};
+#endif

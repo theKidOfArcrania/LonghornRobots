@@ -1,6 +1,8 @@
+#include "CrossRoads.h"
 #include "Mirobot.h"
 
-CrossRoads prevJunct;
+
+CrossRoads* prevJunct;
 int prevTurn = 1;
 int oneSide = 0;
 int orientation = 0;
@@ -43,8 +45,8 @@ void Mirobot::do_maze()
   if (collideLeft && collideRight) {
     //Dead end
     oneSide = 0;
-    int dx = abs(x - prevJunct.deadX);
-    int dy = abs(y - prevJunct.deadY);
+    int dx = abs(x - prevJunct->deadX);
+    int dy = abs(y - prevJunct->deadY);
 
     //Back up.
     back(50);
@@ -55,13 +57,13 @@ void Mirobot::do_maze()
       //Reset been state
       //TODO: push prevJunct instead.
       prevJunct = new CrossRoads();
-      prevJunct.been[(orientation + 2) % 4] = true;
-      prevJunct.deadX = x;
-      prevJunct.deadY = y;
+      prevJunct->been[(orientation + 2) % 4] = true;
+      prevJunct->deadX = x;
+      prevJunct->deadY = y;
     }
     
-    prevJunct.been[orientation] = true;
-    if (!prevJunct.been[(orientation - prevTurn) % 4])
+    prevJunct->been[orientation] = true;
+    if (!prevJunct->been[(orientation - prevTurn) % 4])
     {
       if (prevTurn < 0)
         right(-90 * prevTurn);
@@ -69,20 +71,20 @@ void Mirobot::do_maze()
         left(90 * prevTurn);
       rotate(-prevTurn);
       prevTurn = -prevTurn;
-    } else if (!prevJunct.been[(orientation + prevTurn) % 4]) {
+    } else if (!prevJunct->been[(orientation + prevTurn) % 4]) {
       if (prevTurn < 0)
         left(-90 * prevTurn);
       else
         right(90 * prevTurn);
       rotate(prevTurn);
-    } else if (!prevJunct.been[(orientation + 2) % 2]) {
+    } else if (!prevJunct->been[(orientation + 2) % 2]) {
       left(180);
       rotate(2);
     } else {
       //If we used all three locations then we are screwed.
       while(true)
       {
-        mirobot.beep(20);
+        beep(20);
       }
     }
   }else if (collideLeft || collideRight) {

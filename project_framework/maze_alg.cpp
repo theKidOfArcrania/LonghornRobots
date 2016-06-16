@@ -1,10 +1,11 @@
 #include "CrossRoads.h"
 #include "Mirobot.h"
 
-
+bool panic = false;
+char freqs[8] = {(char)440, (char)360, (char)570, (char)806, (char)1100, (char)889, (char)452, (char)1146};
+int index = 0;
 CrossRoads* prevJunct;
 int prevTurn = 1;
-int oneSide = 0;
 int orientation = 0;
 long x = 0;
 long y = 0;
@@ -14,15 +15,14 @@ long y = 0;
 //3: west
 
 int reorientate(int amount)
-{
-  
+{ 
   int val = (orientation+amount) & 3;
+  return val;
 }
 
 void rotate(int amount)
 {
   orientation = reorientate(amount);
-  
 }
 
 void updateCoords(int move)
@@ -48,21 +48,26 @@ void Mirobot::do_maze()
   boolean collideLeft = !digitalRead(LEFT_COLLIDE_SENSOR);
   boolean collideRight = !digitalRead(RIGHT_COLLIDE_SENSOR);
 
+  if (panic)
+  {
+    tone(SPEAKER_PIN, freqs[index++], 200);
+    delay(200);
+    if (index >= 8)
+      index = 0;
+    return;
+  }
+
   if (collideLeft || collideRight) {
     //Dead end
-    oneSide = 0;
     long dx = abs(x - prevJunct->deadX);
     long dy = abs(y - prevJunct->deadY);
 
     //Back up.
     back(50);
     updateCoords(-50);
-
     
-    
-    if (dx > 120 || dy > 120)
+    if (dx > 150 || dy > 150)
     {
-      beep(200);
       //Reset been state
       //TODO: push prevJunct instead.
       prevJunct = new CrossRoads();
@@ -93,35 +98,17 @@ void Mirobot::do_maze()
     } else {
       //If we used all three locations then we are screwed.
       int move = prevJunct->inOrient - orientation;
+      if (move == 0)
+      {
+        panic = true;
+        return;
+      }
       right(90 * move);
       rotate(move);
-      beep3(1000);
-    }
-  }else if (collideLeft || collideRight) {
-    //NOTE only call this case when we are retracing.
-    //Back up and try again.
-    oneSide++;
-    if (oneSide >= 50)
-    {
-      updateCoords(-45);
-      back(50);
-      left(90);
-      rotate(-1);
-      if (collideLeft) {
-        back(20);
-        updateCoords(-20);
-      } else {
-        forward(20);
-        updateCoords(20);
-      }
-      right(90);
-      rotate(1);
     }
   }else {
-    oneSide = 0;
-    forward(1);
-    updateCoords(1);
+    forward(10);
+    updateCoords(10);
   }
-  beep(20);
 }
 

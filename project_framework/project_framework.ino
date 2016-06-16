@@ -1,6 +1,7 @@
 
 #include "Mirobot.h"
 #include "CrossRoads.h"
+void play_DeepInTheHeart();
 /*
 This sketch shows how you can program Mirobot directly in the Arduino environment.
 */
@@ -21,7 +22,7 @@ void loop(){
    //mirobot.draw_circle();
    //mirobot.draw_heart();
    //mirobot.draw_artwork();
-   mirobot.do_maze();
+   play_DeepInTheHeart();
    //mirobot.follow_line();
    //mirobot.collision();
 

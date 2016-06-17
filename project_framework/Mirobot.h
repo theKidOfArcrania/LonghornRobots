@@ -109,6 +109,7 @@ class Mirobot {
     void draw_parallel_lines(int);
     void draw_circle();
     void draw_heart();
+    void draw_right();
     void draw_artwork();
     void do_maze();
     void follow_line();

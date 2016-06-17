@@ -41,43 +41,45 @@ void Mirobot::draw_circle()
   }
 }
 
-void Mirobot::draw_heart()
+
+voidw_heart();
+   draw_right();
+   draw_right();
+   draw_heart();
+
+   
+    for (int i=0; i<200; i++)
+    {
+      draw_square(100);
+    }
+  
+}
+
+Mirobot::draw_heart()
 {
-  forward(200);
+  forward(100);
   for (int i=0; i<18; i++)
   {
-    if (i & 1 == 1)
-      forward(18);
+    if (i & 3 == 0)
+      forward(8);
     else 
-      forward(17);
+      forward(9);
     left(10);
   }
   right(90);
   for (int i=0; i<18; i++)
   {
-    if (i & 1 == 1)
-      forward(18);
+    if (i & 3 == 0)
+      forward(8);
     else 
-      forward(17);
+      forward(9);
     left(10);
     
   }
-  forward(200);
+  
+  forward(100);
 }
 
-
-void Mirobot::draw_artwork()
-{
-    for (int i=0; i<4; i++)
-    {
-      draw_heart();
-      left(180);
-    }
-
-    //draw_line(400);
-    //left(60);
-    //draw_line(100);
-}
 
 void Mirobot::follow_line()
 {

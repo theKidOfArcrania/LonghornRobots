@@ -42,7 +42,9 @@ void Mirobot::draw_circle()
 }
 
 
-voidw_heart();
+void Mirobot::draw_artwork()
+{
+   draw_heart();
    draw_right();
    draw_right();
    draw_heart();
@@ -55,7 +57,7 @@ voidw_heart();
   
 }
 
-Mirobot::draw_heart()
+void Mirobot::draw_heart()
 {
   forward(100);
   for (int i=0; i<18; i++)

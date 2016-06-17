@@ -77,14 +77,14 @@ void Mirobot::do_maze()
     {
     case 1: //Hit once
       if (prevTurn < 0)
-        right(-88 * prevTurn);
+        right(-89 * prevTurn);
       else
-        left(88 * prevTurn);
+        left(89 * prevTurn);
       rotate(-prevTurn);
       prevTurn = -prevTurn;
       break;
     case 2: //Turn other way.
-      left(180);
+      left(178);
       rotate(2);
       break;
       
@@ -95,7 +95,7 @@ void Mirobot::do_maze()
         panic = true;
         return;
       }
-      right(88 * move);
+      right(89 * move);
       rotate(move);
     }
   }else {

@@ -97,6 +97,15 @@ void Mirobot::do_maze()
       }
       right(89 * move);
       rotate(move);
+      //Back-trace to the previous wall.
+      forward(160); //Go some time forward
+      rotate(1);
+      right(89);
+      prevJunct = new CrossRoads();
+      prevJunct->deadX = x;
+      prevJunct->deadY = y;
+      prevJunct->inOrient = reorientate(2);
+      prevJunct->walls = 2;
     }
   }else {
     forward(10);
